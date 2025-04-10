@@ -220,7 +220,7 @@ function createElement(elementData, isThumbnail = false) {
       element.style.height = `${elementData.height}px`;
 
       const table = document.createElement("table");
-      table.style.tableLayout = "fixed"; // Important for accurate column width
+      table.style.tableLayout = "fixed";
       table.style.width = `${elementData.width}px`;
       table.style.height = `${elementData.height}px`;
 
@@ -233,7 +233,6 @@ function createElement(elementData, isThumbnail = false) {
 
       const tbody = document.createElement("tbody");
 
-      // Calculate column widths if colWidths exists
       const colWidths = elementData.colWidths || [];
       const totalRelativeWidth = colWidths.reduce(
         (sum, width) => sum + width,
@@ -630,8 +629,8 @@ function showToast(message, duration = 2000) {
   const svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
   svg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
   svg.setAttribute("viewBox", "0 0 512 512");
-  svg.setAttribute("width", "24px");
-  svg.setAttribute("height", "24px");
+  svg.setAttribute("width", "13px");
+  svg.setAttribute("height", "13px");
 
   const path = document.createElementNS("http://www.w3.org/2000/svg", "path");
   path.setAttribute("fill", "#63E6BE");
@@ -650,8 +649,11 @@ function showToast(message, duration = 2000) {
   slideViewer.appendChild(toast);
 
   setTimeout(() => {
-    toast.remove();
-  }, duration);
+    toast.classList.add("toast-hide"); // Thêm class để animate ra ngoài
+    setTimeout(() => {
+      toast.remove(); // Xóa sau khi hoàn tất animation ra
+    }, 500); // thời gian trùng với duration của animation
+  }, 2000); // thời gian hiển thị toast
 }
 
 // Hàm tạo thumbnail cho từng slide
