@@ -725,3 +725,60 @@ function initialize(data) {
   // Hiển thị slide đầu tiên
   displaySlide(currentSlideIndex);
 }
+
+let editMode = false;
+let currentEditingCell = null;
+
+// Bắt sự kiện double click trên bảng
+document.addEventListener("dblclick", (e) => {
+  const tableElement = e.target.closest(".element-table");
+  if (tableElement && !isFullscreen()) {
+    // Vào chế độ chỉnh sửa
+    editMode = true;
+    tableElement.style.cursor = "text";
+
+    // Ngăn kéo bảng khi đang chỉnh sửa
+    tableElement.removeEventListener("mousedown", startDrag);
+  }
+});
+
+// Bắt sự kiện click để chỉnh sửa ô cụ thể
+document.addEventListener("click", (e) => {
+  if (!editMode) return;
+
+  const cellDiv = e.target.closest(".table-cell-content");
+
+  // Nếu click vào ô
+  if (cellDiv) {
+    // Kết thúc chỉnh sửa ô cũ (nếu có)
+    if (currentEditingCell && currentEditingCell !== cellDiv) {
+      currentEditingCell.contentEditable = "false";
+      currentEditingCell.blur();
+    }
+
+    currentEditingCell = cellDiv;
+    cellDiv.contentEditable = "true";
+    cellDiv.focus();
+
+    // Ngăn kéo bảng khi đang chỉnh sửa
+    const table = e.target.closest(".element-table");
+    if (table) {
+      table.removeEventListener("mousedown", startDrag);
+    }
+  } else {
+    // Nếu click ra ngoài, thoát chế độ chỉnh sửa
+    if (currentEditingCell) {
+      currentEditingCell.contentEditable = "false";
+      currentEditingCell.blur();
+      currentEditingCell = null;
+    }
+
+    // Thoát chế độ chỉnh sửa
+    editMode = false;
+
+    document.querySelectorAll(".element-table").forEach((table) => {
+      table.style.cursor = "move";
+      table.addEventListener("mousedown", startDrag);
+    });
+  }
+});
